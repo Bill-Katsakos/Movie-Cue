@@ -1,2 +1,2 @@
 # Movie-Cue
-Movie Cue is a MERN stack web app that lets users securely manage their personal movie watchlist, search for films via IMDB, and track their watched status.
+Movie Cue is a MERN stack MVP web application that allows users to create and manage their personal movie watchlist. With JWT-based authentication, users can sign up, log in, and safely manage their account. The app enables users to perform CRUD operations on movies—including storing titles, posters, release years, and their watched status. Additionally, Movie Cue integrates with an external movie API like OMDB for movie searches, letting users easily add new titles to their list and mark them as watched or unwatched.
