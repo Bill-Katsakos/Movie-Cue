@@ -40,6 +40,28 @@ function Home() {
     getAllMovies();
   }, []);
 
+
+  async function deleteMovie(id) {
+    const confirmDeletion = window.confirm("Are you sure you want to delete this movie? 🤔");
+    if (!confirmDeletion) return;
+    try {
+      
+      await axios.delete("http://localhost:4000/movies/delete", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        },
+        data: {
+          movieId: id
+        }
+      });
+      getAllMovies();
+    } catch (error) {
+      console.error("Error deleting movie:", error);
+    }
+  }
+  
+
+  
   return (
     <div>
       <h1>Welcome to Movie Cue </h1>
@@ -61,7 +83,7 @@ function Home() {
             {token && movie.user._id === decodedToken.userId ? ( // το movie.user._id αντοιστιχεί στο id του user
             // τσεκάρουμε αν υπάρχει το token και είναι ίσο με το id του user του movie και αν ναι εμφανίζουμε τα παρακάτω κουμπιά
               <div>
-                <button>Delete</button>
+                <button onClick={() => deleteMovie(movie._id)}>Delete</button>
                 <button>Edit</button>
               </div>
             ) : (
