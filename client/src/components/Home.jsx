@@ -41,6 +41,29 @@ function Home() {
   }, []);
 
 
+    //   ________Toggle watched movies_______
+    async function toggleStatus(e, id) {
+      const isChecked = e.target.checked;
+      // Ενημέρωση της τοπικής κατάστασης (optimistic update)
+      setMovies((prevMovies) =>
+        prevMovies.map((movie) =>
+          movie._id === id ? { ...movie, completed: isChecked } : movie
+        )
+      );
+      try {
+        await axios.put(
+          "http://localhost:4000/movies/update",
+          { movieId: id, completed: isChecked },
+          { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+        );
+        // Ανανεώνουμε τη λίστα για να σιγουρευτούμε ότι είναι συγχρονισμένη με τον server
+        getAllMovies();
+      } catch (error) {
+        console.error("Error updating movie status:", error);
+      }
+    }
+
+      //   ________Delete a movie _______
   async function deleteMovie(id) {
     const confirmDeletion = window.confirm("Are you sure you want to delete this movie? 🤔");
     if (!confirmDeletion) return;
@@ -76,7 +99,14 @@ function Home() {
             }}
             key={movie._id}
           >
-            <p>{movie.content}</p> 
+          <input
+            type="checkbox"
+            checked={movie.completed}
+            onChange={(e) => toggleStatus(e, movie._id)}
+          />
+          <span className={movie.completed ? "watched" : ""}>
+            {movie.content}
+          </span>
             <h6>{movie.user.username}</h6> {/* τα δεδομένα του user μέσα από το movie, τα φαίρνω χρησημοποιώντας το <Movie.find().populate("user", "-password"); > από το server στο get all movies */} 
             <h6>{movie.user.email}</h6>
 
@@ -84,10 +114,9 @@ function Home() {
             // τσεκάρουμε αν υπάρχει το token και είναι ίσο με το id του user του movie και αν ναι εμφανίζουμε τα παρακάτω κουμπιά
               <div>
                 <button onClick={() => deleteMovie(movie._id)}>Delete</button>
-                <button>Edit</button>
               </div>
             ) : (
-              // άμα δεν συμπίπτουν τα id δεν εμφανίζονται τα κουμπια
+              // άμα δεν συμπίπτουν τα id δεν εμφανίζονται το delete
               ""
             )}
           </div>
