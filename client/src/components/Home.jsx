@@ -47,13 +47,13 @@ function Home() {
       // Ενημέρωση της τοπικής κατάστασης (optimistic update)
       setMovies((prevMovies) =>
         prevMovies.map((movie) =>
-          movie._id === id ? { ...movie, completed: isChecked } : movie
+          movie._id === id ? { ...movie, watched: isChecked } : movie
         )
       );
       try {
         await axios.put(
           "http://localhost:4000/movies/update",
-          { movieId: id, completed: isChecked },
+          { movieId: id, watched: isChecked },
           { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
         );
         // Ανανεώνουμε τη λίστα για να σιγουρευτούμε ότι είναι συγχρονισμένη με τον server
@@ -101,10 +101,10 @@ function Home() {
           >
           <input
             type="checkbox"
-            checked={movie.completed}
+            checked={movie.watched}
             onChange={(e) => toggleStatus(e, movie._id)}
           />
-          <span className={movie.completed ? "watched" : ""}>
+          <span className={movie.watched ? "watched" : ""}>
             {movie.content}
           </span>
             <h6>{movie.user.username}</h6> {/* τα δεδομένα του user μέσα από το movie, τα φαίρνω χρησημοποιώντας το <Movie.find().populate("user", "-password"); > από το server στο get all movies */} 

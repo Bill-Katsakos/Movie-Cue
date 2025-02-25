@@ -43,7 +43,7 @@ const User = mongoose.model("User", userSchema);
 // ___________Movies schema_________
 const movieSchema = new mongoose.Schema({
   content: String,
-  completed: { type: Boolean, default: false },
+  watched: { type: Boolean, default: false },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 
