@@ -43,7 +43,12 @@ const User = mongoose.model("User", userSchema);
 
 // ___________Movies schema_________
 const movieSchema = new mongoose.Schema({
-  content: String,
+  title: String,
+  year: String,
+  type: String,
+  imdbRating: String,
+  plot: String,
+  poster: String,
   watched: { type: Boolean, default: false },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
@@ -97,29 +102,36 @@ const Movie = mongoose.model("Movie", movieSchema);
 
 const getAllMovies = async (req, res) => {
   try {
-    let allMovies = await Movie.find().populate("user", "-password"); // with .populate we have access to the user's details. through the id of the user that we saved in the movie | EXPLODE the password
+    let allMovies = await Movie.find().populate("user", "-password");
     res.send(allMovies);
   } catch (error) {
     res.send(error);
   }
 };
 
-app.get("/movies", getAllMovies); // to make it protected I need to add Middleware 
+app.get("/movies", getAllMovies); 
 
 // __________Create a Movie________
 const createMovie = async (req, res) => {
-  try {
-    let userId = req.user.userId;
-    let movieContent = req.body.content;
-    let createdMovie = await Movie.create({
-      content: movieContent,
-      user: userId,
-    });
-    res.send({ msg: "A movie is been added successfully", createdMovie });
-  } catch (error) {
-    res.send(error);
-  }
-};
+    try {
+      let userId = req.user.userId;
+      const { title, year, type, imdbRating, plot, poster } = req.body;
+  
+      let createdMovie = await Movie.create({
+        title,
+        year,
+        type,
+        imdbRating,
+        plot,
+        poster,
+        user: userId,
+      });
+  
+      res.send({ msg: "A movie is been added successfully", createdMovie });
+    } catch (error) {
+      res.send(error);
+    }
+  };
 app.post("/movies/create", authMiddleware, createMovie);
 
 // _________Get specific user Movies_________
@@ -259,7 +271,7 @@ const loginUser = async (req, res) => {
         // }
     );
 
-    return res.send({ msg: "Login Successfully", token }); // ******* TOKEN
+    return res.send({ msg: "Login Successfully", token }); 
   } catch (error) {
     console.log(error);
     res.status(500).send({ msg: "Internal server error" });

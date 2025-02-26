@@ -3,13 +3,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function MovieForm() {
-  const [content, setContent] = useState("");
   const navigate = useNavigate();
 
   const [omdbResults, setOmdbResults] = useState([]);
   const [omdbQuery, setOmdbQuery] = useState("");
   const [omdbError, setOmdbError] = useState("");
 
+  // ----------- Search OMDB -----------
   async function searchOMDB(e) {
     e.preventDefault();
     setOmdbError("");
@@ -41,40 +41,36 @@ function MovieForm() {
     }
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  // ----------- Add to Watchlist -----------
+  async function addToWatchlist(selectedMovie) {
     try {
-      let newMovieInfo = { content };
-      let res = await axios.post(
+      const newMovieInfo = {
+        title: selectedMovie.Title,
+        year: selectedMovie.Year,
+        type: selectedMovie.Type,
+        imdbRating: selectedMovie.imdbRating,
+        plot: selectedMovie.Plot,
+        poster: selectedMovie.Poster,
+      };
+
+      const res = await axios.post(
         "http://localhost:4000/movies/create",
         newMovieInfo,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
       );
+
       alert(res.data.msg);
-      navigate("/");
+      // navigate("/");
     } catch (error) {
       console.log(error);
-      alert(error.response.data.msg);
+      alert(error.response?.data?.msg || "Something went wrong.");
     }
   }
 
   return (
     <div>
-      <h2>Create a New Movie</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="movie content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-        <input type="submit" value="Create movie" />
-      </form>
-
-      <hr />
-
       <h2>Search movies on OMDB</h2>
       <form onSubmit={searchOMDB}>
         <input
@@ -85,6 +81,7 @@ function MovieForm() {
         />
         <button type="submit">Search</button>
       </form>
+
       {omdbError && <p style={{ color: "red" }}>{omdbError}</p>}
 
       <div>
@@ -110,6 +107,10 @@ function MovieForm() {
                   style={{ width: "100px" }}
                 />
               )}
+
+              <button onClick={() => addToWatchlist(movie)}>
+                add to watchlist
+              </button>
             </div>
           ))}
       </div>
@@ -118,3 +119,4 @@ function MovieForm() {
 }
 
 export default MovieForm;
+// 🦖

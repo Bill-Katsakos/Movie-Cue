@@ -19,7 +19,7 @@ function Register() {
         "http://localhost:4000/user/register",
         newUserInfo
       );
-      alert(res.data.msg); // αυτό είναι το μύνημα που πέρνουμε από το server
+      alert(res.data.msg); 
     } catch (error) {
       console.log(error);
     }
@@ -53,3 +53,4 @@ function Register() {
 }
 
 export default Register;
+// 🦖

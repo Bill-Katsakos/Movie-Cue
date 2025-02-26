@@ -4,12 +4,10 @@ import React, { useEffect, useState } from "react";
 function UserMovies() {
   const [movies, setMovies] = useState([]);
 
-  // πέρνουμε τον ίδιο κώδικα από το UserForm.jsx
-
   async function getUserMovies() {
     try {
       let res = await axios.get("http://localhost:4000/movies/user", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }, // εδω ορίζουμε το Authorization στο headers. Πρέπει να συμπεριλάβουμε και το "Bearer " πριν το token για ταυτοποίηση
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }, 
       });
       setMovies(res.data);
     } catch (error) {
@@ -24,7 +22,6 @@ function UserMovies() {
   return (
     <>
       <h1>My movies</h1>
-      {/* αντιγράφουμε τον κώδικα από το Home.jsx */}
       {movies.map((movie) => {
         return (
           <div
@@ -46,3 +43,4 @@ function UserMovies() {
 }
 
 export default UserMovies;
+// 🦖

@@ -23,7 +23,7 @@ function Home() {
   async function getAllMovies() {
     try {
       let res = await axios.get("http://localhost:4000/movies");
-      setMovies(res.data.reverse()); 
+      setMovies(res.data.reverse());
       console.log(res.data);
     } catch (error) {
       console.log(error);
@@ -48,6 +48,7 @@ function Home() {
         { movieId: id, watched: isChecked },
         { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
       );
+
       getAllMovies();
     } catch (error) {
       console.error("Error updating movie status:", error);
@@ -56,16 +57,18 @@ function Home() {
 
   //   ________Delete a movie _______
   async function deleteMovie(id) {
-    const confirmDeletion = window.confirm("Are you sure you want to delete this movie? 🤔");
+    const confirmDeletion = window.confirm(
+      "Are you sure you want to delete this movie? 🤔"
+    );
     if (!confirmDeletion) return;
     try {
       await axios.delete("http://localhost:4000/movies/delete", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         data: {
-          movieId: id
-        }
+          movieId: id,
+        },
       });
       getAllMovies();
     } catch (error) {
@@ -92,19 +95,34 @@ function Home() {
               checked={movie.watched}
               onChange={(e) => toggleStatus(e, movie._id)}
             />
-            <span className={movie.watched ? "watched" : ""}>
-              {movie.content}
-            </span>
-            <h6>{movie.user.username}</h6>
-            <h6>{movie.user.email}</h6>
 
-            {token && movie.user._id === decodedToken.userId ? (
+            <div className={movie.watched ? "watched" : ""}>
+              <h3>{movie.title}</h3>
+              <p>Year: {movie.year}</p>
+              <p>Type: {movie.type}</p>
+              <p>IMDB Rating: {movie.imdbRating}</p>
+              <p>Plot: {movie.plot}</p>
+              {movie.poster && movie.poster !== "N/A" && (
+                <img
+                  src={movie.poster}
+                  alt={movie.title}
+                  style={{ width: "100px" }}
+                />
+              )}
+            </div>
+
+            {movie.user && (
+              <>
+                <h6>{movie.user.username}</h6>
+                <h6>{movie.user.email}</h6>
+              </>
+            )}
+
+            {token && movie.user && movie.user._id === decodedToken.userId ? (
               <div>
                 <button onClick={() => deleteMovie(movie._id)}>Delete</button>
               </div>
-            ) : (
-              ""
-            )}
+            ) : null}
           </div>
         );
       })}
@@ -113,3 +131,4 @@ function Home() {
 }
 
 export default Home;
+// 🦖
