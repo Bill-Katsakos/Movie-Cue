@@ -9,35 +9,48 @@ function MovieForm() {
   const [omdbQuery, setOmdbQuery] = useState("");
   const [omdbError, setOmdbError] = useState("");
 
-  // ----------- Search OMDB -----------
+  // -----------Search on OMDB -----------
   async function searchOMDB(e) {
     e.preventDefault();
     setOmdbError("");
 
     try {
-      const res = await axios.get("http://localhost:4000/api/omdb", {
+      // Initial search call with the parameter s
+      const searchRes = await axios.get("http://localhost:4000/api/omdb", {
         params: {
           s: omdbQuery,
-          plot: "short",
         },
       });
 
-      if (res.data.Error) {
-        setOmdbError(res.data.Error);
+      if (searchRes.data.Error) {
+        setOmdbError(searchRes.data.Error);
         setOmdbResults([]);
       } else {
-        const moviesDetailed = res.data.Search.map((movie) => ({
-          ...movie,
-          imdbRating: movie.imdbRating || "N/A",
-          Plot: movie.Plot || "No description available",
-        }));
+        // Download detailed data for each film based on the imdbID
+        const movies = searchRes.data.Search;
+        const detailedMovies = await Promise.all(
+          movies.map(async (movie) => {
+            const detailRes = await axios.get("http://localhost:4000/api/omdb", {
+              params: {
+                i: movie.imdbID,
+                plot: "short",
+              },
+            });
+            return {
+              ...movie,
+              imdbRating: detailRes.data.imdbRating || "N/A",
+              Plot: detailRes.data.Plot || "No description available",
+            };
+          })
+        );
 
-        moviesDetailed.sort((a, b) => parseInt(b.Year) - parseInt(a.Year));
-        setOmdbResults(moviesDetailed);
+        // Sorting of films in descending order of year
+        detailedMovies.sort((a, b) => parseInt(b.Year) - parseInt(a.Year));
+        setOmdbResults(detailedMovies);
       }
     } catch (error) {
-      setOmdbError("Error when communicating with the OMDB API.");
       console.error(error);
+      setOmdbError("Error when communicating with the OMDB API.");
     }
   }
 
@@ -107,7 +120,6 @@ function MovieForm() {
                   style={{ width: "100px" }}
                 />
               )}
-
               <button onClick={() => addToWatchlist(movie)}>
                 add to watchlist
               </button>
@@ -119,4 +131,3 @@ function MovieForm() {
 }
 
 export default MovieForm;
-// 🦖

@@ -100,7 +100,7 @@ function Home() {
               <h3>{movie.title}</h3>
               <p>Year: {movie.year}</p>
               <p>Type: {movie.type}</p>
-              <p>IMDB Rating: {movie.imdbRating}</p>
+              <p>IMDB Rating: ⭐️ {movie.imdbRating}/10</p>
               <p>Plot: {movie.plot}</p>
               {movie.poster && movie.poster !== "N/A" && (
                 <img
@@ -110,13 +110,6 @@ function Home() {
                 />
               )}
             </div>
-
-            {movie.user && (
-              <>
-                <h6>{movie.user.username}</h6>
-                <h6>{movie.user.email}</h6>
-              </>
-            )}
 
             {token && movie.user && movie.user._id === decodedToken.userId ? (
               <div>
