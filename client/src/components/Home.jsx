@@ -90,45 +90,38 @@ function Home() {
     }
   }
   
-
-      // _______  OMDB API _______
   async function searchOMDB(e) {
     e.preventDefault();
     setOmdbError(""); 
+  
     try {
-      const res = await axios.get("http://www.omdbapi.com/", {
+      const res = await axios.get("http://localhost:4000/api/omdb", {
         params: {
-          s: omdbQuery,         // το query που εισήγαγε ο χρήστης
-          apikey: ""     // ****************** OMDB API key
+          s: omdbQuery,
+          plot: "short"  
         }
       });
+  
       if (res.data.Error) {
         setOmdbError(res.data.Error);
         setOmdbResults([]);
       } else {
-        // Για κάθε αποτέλεσμα, πραγματοποιούμε επιπλέον κλήση για να πάρουμε λεπτομερείς πληροφορίες:
-        // τύπο (Type), βαθμολογία (imdbRating) και περιγραφή (Plot)
-        const moviesDetailed = await Promise.all(
-          res.data.Search.map(async (movie) => {
-            const details = await axios.get("http://www.omdbapi.com/", {
-              params: {
-                i: movie.imdbID,      // χρησιμοποιούμε το imdbID για λεπτομέρειες
-                plot: "short",        // μικρή περιγραφή
-                apikey: ""   // ****************** OMDB API key
-              }
-            });
-            return details.data;
-          })
-        );
-        // Προσθήκη: Ταξινόμηση των αποτελεσμάτων με βάση το έτος (Year) σε φθίνουσα σειρά
+        const moviesDetailed = res.data.Search.map(movie => ({
+          ...movie,
+          imdbRating: movie.imdbRating || "N/A",
+          Plot: movie.Plot || "No description available"
+        }));
+  
         moviesDetailed.sort((a, b) => parseInt(b.Year) - parseInt(a.Year));
+  
         setOmdbResults(moviesDetailed);
       }
     } catch (error) {
-      setOmdbError("Σφάλμα κατά την επικοινωνία με το OMDB API.");
+      setOmdbError("Error when communicating with the OMDB API.");
       console.error(error);
     }
   }
+  
   
   return (
     <div>
@@ -170,7 +163,6 @@ function Home() {
 
       <h2>Search movies on OMDB</h2>
       <form onSubmit={searchOMDB}>
-        {/* Προσθήκη: Εισαγωγή query για αναζήτηση στο OMDB */}
         <input
           type="text"
           placeholder="Enter movie name..."
@@ -179,9 +171,7 @@ function Home() {
         />
         <button type="submit">Search</button>
       </form>
-      {/* Προσθήκη: Εμφάνιση μηνύματος λάθους αν υπάρχει */}
       {omdbError && <p style={{ color: "red" }}>{omdbError}</p>}
-      {/* Προσθήκη: Εμφάνιση αποτελεσμάτων από το OMDB API */}
       <div>
         {omdbResults.length > 0 &&
           omdbResults.map((movie) => (
@@ -191,11 +181,8 @@ function Home() {
             >
               <h3>{movie.Title}</h3>
               <p>Year: {movie.Year}</p>
-              {/* Προσθήκη: Εμφάνιση του τύπου (ταινία ή σειρά) */}
-              <p>Film type: {movie.Type}</p>
-              {/* Προσθήκη: Εμφάνιση της βαθμολογίας (imdbRating) */}
-              <p>Rating: {movie.imdbRating}</p> {/* Το πεδίο αυτό έρχεται από το IMDb μέσω του OMDB API */}
-              {/* Προσθήκη: Εμφάνιση της περιγραφής (Plot) */}
+              <p>Type: {movie.Type}</p>
+              <p>IMDB Rating: ⭐️ {movie.imdbRating}/10</p> 
               <p>Description: {movie.Plot}</p>
               {movie.Poster !== "N/A" && (
                 <img

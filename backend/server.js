@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cors = require("cors"); 
+const axios = require("axios");
 
 const authMiddleware = require("./middleware/auth");
 
@@ -181,6 +182,24 @@ const updateMovie = async (req, res) => {
   
   app.put("/movies/update", authMiddleware, updateMovie);  
   
+  
+// _________________API_________________
+app.get("/api/omdb", async (req, res) => {
+    try {
+        const apiKey = process.env.OMDB_API_KEY;
+        const { s, i, plot } = req.query;
+        let omdbUrl = `http://www.omdbapi.com/?apikey=${apiKey}`;
+        if (s) omdbUrl += `&s=${s}`;
+        if (i) omdbUrl += `&i=${i}`;
+        if (plot) omdbUrl += `&plot=${plot}`;
+        const response = await axios.get(omdbUrl);
+        res.json(response.data);
+    } catch (error) {
+        console.error("OMDB API Error:", error);
+        res.status(500).json({ error: "Failed to fetch data from OMDB API" });
+    }
+});
+
 
 // _________________Register Route_________________
 
