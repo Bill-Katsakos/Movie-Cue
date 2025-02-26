@@ -6,6 +6,13 @@ import { jwtDecode } from "jwt-decode";
 function Home() {
   const [movies, setMovies] = useState([]);
 
+    // Νέο state για τα αποτελέσματα αναζήτησης από το OMDB API
+    const [omdbResults, setOmdbResults] = useState([]);
+    // Νέο state για το query της αναζήτησης OMDB
+    const [omdbQuery, setOmdbQuery] = useState("");
+    // Νέο state για πιθανό error από την αναζήτηση OMDB
+    const [omdbError, setOmdbError] = useState("");
+
   // ----- token -------
   // token ==== logged in user (this token include the userId )
   // the movies ==> each movie contains the user id
@@ -84,6 +91,44 @@ function Home() {
   }
   
 
+      // _______  OMDB API _______
+  async function searchOMDB(e) {
+    e.preventDefault();
+    setOmdbError(""); 
+    try {
+      const res = await axios.get("http://www.omdbapi.com/", {
+        params: {
+          s: omdbQuery,         // το query που εισήγαγε ο χρήστης
+          apikey: ""     // ****************** OMDB API key
+        }
+      });
+      if (res.data.Error) {
+        setOmdbError(res.data.Error);
+        setOmdbResults([]);
+      } else {
+        // Για κάθε αποτέλεσμα, πραγματοποιούμε επιπλέον κλήση για να πάρουμε λεπτομερείς πληροφορίες:
+        // τύπο (Type), βαθμολογία (imdbRating) και περιγραφή (Plot)
+        const moviesDetailed = await Promise.all(
+          res.data.Search.map(async (movie) => {
+            const details = await axios.get("http://www.omdbapi.com/", {
+              params: {
+                i: movie.imdbID,      // χρησιμοποιούμε το imdbID για λεπτομέρειες
+                plot: "short",        // μικρή περιγραφή
+                apikey: ""   // ****************** OMDB API key
+              }
+            });
+            return details.data;
+          })
+        );
+        // Προσθήκη: Ταξινόμηση των αποτελεσμάτων με βάση το έτος (Year) σε φθίνουσα σειρά
+        moviesDetailed.sort((a, b) => parseInt(b.Year) - parseInt(a.Year));
+        setOmdbResults(moviesDetailed);
+      }
+    } catch (error) {
+      setOmdbError("Σφάλμα κατά την επικοινωνία με το OMDB API.");
+      console.error(error);
+    }
+  }
   
   return (
     <div>
@@ -122,6 +167,47 @@ function Home() {
           </div>
         );
       })}
+
+      <h2>Search movies on OMDB</h2>
+      <form onSubmit={searchOMDB}>
+        {/* Προσθήκη: Εισαγωγή query για αναζήτηση στο OMDB */}
+        <input
+          type="text"
+          placeholder="Enter movie name..."
+          value={omdbQuery}
+          onChange={(e) => setOmdbQuery(e.target.value)}
+        />
+        <button type="submit">Search</button>
+      </form>
+      {/* Προσθήκη: Εμφάνιση μηνύματος λάθους αν υπάρχει */}
+      {omdbError && <p style={{ color: "red" }}>{omdbError}</p>}
+      {/* Προσθήκη: Εμφάνιση αποτελεσμάτων από το OMDB API */}
+      <div>
+        {omdbResults.length > 0 &&
+          omdbResults.map((movie) => (
+            <div
+              key={movie.imdbID}
+              style={{ border: "1px dashed gray", margin: "8px", padding: "8px" }}
+            >
+              <h3>{movie.Title}</h3>
+              <p>Year: {movie.Year}</p>
+              {/* Προσθήκη: Εμφάνιση του τύπου (ταινία ή σειρά) */}
+              <p>Film type: {movie.Type}</p>
+              {/* Προσθήκη: Εμφάνιση της βαθμολογίας (imdbRating) */}
+              <p>Rating: {movie.imdbRating}</p> {/* Το πεδίο αυτό έρχεται από το IMDb μέσω του OMDB API */}
+              {/* Προσθήκη: Εμφάνιση της περιγραφής (Plot) */}
+              <p>Description: {movie.Plot}</p>
+              {movie.Poster !== "N/A" && (
+                <img
+                  src={movie.Poster}
+                  alt={movie.Title}
+                  style={{ width: "100px" }}
+                />
+              )}
+            </div>
+          ))}
+      </div>
+
     </div>
   );
 }
