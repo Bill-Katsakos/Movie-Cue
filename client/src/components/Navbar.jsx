@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom"; 
+import logo from '../../public/movie-roll.png'
 
 function Navbar() { 
   let token = null;
@@ -33,8 +34,12 @@ function Navbar() {
         {token ? (
           <>
             <li className="nav-item">
-              <Link className="nav-link" to="/find-movie">
-                Find
+              <Link className="nav-link mb-1" to="/find-movie">
+              <img
+                src={logo}
+                alt="find movie"
+                width="20px"
+              />
               </Link>
             </li>
             <li className="nav-item">
@@ -50,8 +55,12 @@ function Navbar() {
           </>
         ) : (
           <li className="nav-item">
-            <Link className="nav-link" to="/">
-              Home
+            <Link className="nav-link mb-1" to="/">
+            <img
+                src={logo}
+                alt="Home page"
+                width="20px"
+              />
             </Link>
           </li>
         )}
