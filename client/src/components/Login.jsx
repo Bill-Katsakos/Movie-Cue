@@ -16,9 +16,9 @@ function Login() {
         password,
       };
       let res = await axios.post("http://localhost:4000/user/login", userInfo);
-      alert(res.data.msg);
+      // alert(res.data.msg);
       localStorage.setItem("token", res.data.token); 
-      navigate("/");
+      navigate("/newmovie");
     } catch (error) {
       console.log(error);
     }

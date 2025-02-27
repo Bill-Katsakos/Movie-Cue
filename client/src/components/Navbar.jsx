@@ -23,12 +23,15 @@ function Navbar() {
     try {
       if (token) {
         localStorage.removeItem("token"); 
-        navigate("/login");
+        navigate("/watchlist");
       }
     } catch (error) {
       console.log(error);
     }
   }
+
+
+
   return (
     <div>
       <ul
@@ -38,20 +41,20 @@ function Navbar() {
           gap: "10px",
         }}
       >
-        <h4> {decodedToken && `Welcome ${decodedToken.email}`}</h4> 
+        {/* <h4> {decodedToken && `Welcome ${decodedToken.email}`}</h4>  */}
         {token ? ( 
           <>
             <li>
-              <Link to="/">All movies</Link>
+              <Link to="/newmovie">Find Movie</Link>
             </li>
             <li>
-              <Link to="/usermovies">My Movies</Link>
+              <Link to="/watchlist">Watchlist</Link>
             </li>
             <li>
-              <Link to="/newmovie">New Movie</Link>
+              <Link to="/usermovies">Unwatched Movies</Link>
             </li>
             <li>
-              <Link to="/login" onClick={handleLogout}> 
+              <Link to="/" onClick={handleLogout}> 
                 Logout
               </Link>
             </li>
@@ -59,6 +62,9 @@ function Navbar() {
         ) : (
           <> 
             {" "}
+            <li>
+              <Link to="/">Home</Link>
+            </li>
             <li>
               <Link to="/login">Login</Link>
             </li>

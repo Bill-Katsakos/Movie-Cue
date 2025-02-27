@@ -84,7 +84,7 @@ function MovieForm() {
 
   return (
     <div>
-      <h2>Search movies on OMDB</h2>
+      <h2>Search movies</h2>
       <form onSubmit={searchOMDB}>
         <input
           type="text"
