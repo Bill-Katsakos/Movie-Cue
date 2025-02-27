@@ -182,6 +182,7 @@ function AddMovie() {
           <input
             type="text"
             className="form-control "
+            id="input"
             placeholder="Enter film or series name..."
             value={omdbQuery}
             onChange={(e) => setOmdbQuery(e.target.value)}

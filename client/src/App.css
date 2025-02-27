@@ -17,6 +17,21 @@
     padding: 10px 20px;
 }
 
+#input {
+    /* border-radius: 5px !important;
+    border: 1.5px solid #0e172c !important;
+    padding: 4px 15px; */
+    /* background-color: var(--primary) !important; */
+    /* width: 15em;
+    height: 1.7em; */
+    outline: none !important;
+}
+#input:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: #0e172c !important; 
+}
+
 .left-links {
 display: flex;
 gap: 10px;
