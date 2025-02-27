@@ -176,7 +176,7 @@ function AddMovie() {
 
   return (
     <div className="container">
-      <h2 className="my-4">Search Movies</h2>
+      <h2 className="my-4">Search Movies/Series</h2>
       <form onSubmit={searchOMDB} className="mb-4">
         <div className="input-group">
           <input

@@ -72,10 +72,13 @@ function UnwatchedMovies() {
           )}
           <div className="card-body">
             <h5 className="card-title">{randomMovie.title}</h5>
-            <p className="card-text">
+            <p className="card-text my-1">
               <strong>Year:</strong> {randomMovie.year}
             </p>
-            <p className="card-text">
+            <p className="card-text my-1">
+              <strong>Type:</strong> {randomMovie.type}
+            </p>
+            <p className="card-text mt-1">
               <strong>IMDB Rating:</strong> ⭐ {randomMovie.imdbRating}/10
             </p>
             <p className="card-text">
@@ -85,7 +88,7 @@ function UnwatchedMovies() {
         </div>
         {/* Button to return to the full list */}
         <button
-          className="btn btn-secondary mt-4"
+          className="btn btn-secondary mt-2"
           onClick={() => setRandomMovie(null)}
         >
           Show All Unwatched
