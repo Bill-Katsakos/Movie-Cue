@@ -5,9 +5,10 @@ import { useNavigate } from "react-router-dom";
 function UnwatchedMovies() {
   const navigate = useNavigate();
   const [movies, setMovies] = useState([]);
+  const [randomMovie, setRandomMovie] = useState(null);
 
   // 1) Fetch all user movies from the server
-  // 2) Locally filter movies that are NOT watched
+  // 2) Filter movies locally that are NOT watched
   async function getUserMovies() {
     try {
       let res = await axios.get("http://localhost:4000/movies/user", {
@@ -17,9 +18,18 @@ function UnwatchedMovies() {
       // Filter only movies with watched === false
       const unWatched = res.data.filter((movie) => !movie.watched);
       setMovies(unWatched);
+      // Reset the random movie selection when the list updates
+      setRandomMovie(null);
     } catch (error) {
       console.log("Error fetching user movies:", error);
     }
+  }
+
+  // Select a random movie from the unwatched list
+  function surpriseMe() {
+    if (movies.length === 0) return;
+    const randomIndex = Math.floor(Math.random() * movies.length);
+    setRandomMovie(movies[randomIndex]);
   }
 
   // Initial fetch of user movies when the component mounts
@@ -27,7 +37,7 @@ function UnwatchedMovies() {
     getUserMovies();
   }, []);
 
-  // Visibility change: check token when the tab becomes visible
+  // Detect visibility change: check token when the tab becomes visible
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
@@ -48,9 +58,53 @@ function UnwatchedMovies() {
     };
   }, [navigate]);
 
+  // If a random movie is selected, display only that movie
+  if (randomMovie) {
+    return (
+      <div className="container d-flex flex-column align-items-center justify-content-center" style={{ minHeight: "80vh" }}>
+        <div className="card surprise-movie">
+          {randomMovie.poster && randomMovie.poster !== "N/A" && (
+            <img
+              src={randomMovie.poster}
+              className="card-img-top"
+              alt={randomMovie.title}
+            />
+          )}
+          <div className="card-body">
+            <h5 className="card-title">{randomMovie.title}</h5>
+            <p className="card-text">
+              <strong>Year:</strong> {randomMovie.year}
+            </p>
+            <p className="card-text">
+              <strong>IMDB Rating:</strong> ⭐ {randomMovie.imdbRating}/10
+            </p>
+            <p className="card-text">
+              <strong>Plot:</strong> {randomMovie.plot}
+            </p>
+          </div>
+        </div>
+        {/* Button to return to the full list */}
+        <button
+          className="btn btn-secondary mt-4"
+          onClick={() => setRandomMovie(null)}
+        >
+          Show All Unwatched
+        </button>
+      </div>
+    );
+  }
+
+  // If no random movie is selected, show the full list of unwatched movies
   return (
     <div className="container">
-      <h1 className="my-4">My Unwatched Movies</h1>
+      {/* Header with title and button */}
+      <div className="d-flex justify-content-between align-items-center my-4">
+        <h1 className="mb-0">Unwatched</h1>
+        <button className="btn btn-primary" onClick={surpriseMe}>
+          Surprise Me
+        </button>
+      </div>
+
       <div className="row g-0">
         {movies.map((movie) => (
           <div key={movie._id} className="col-md-6 col-lg-4 mb-4">
@@ -91,8 +145,6 @@ function UnwatchedMovies() {
       </div>
     </div>
   );
-  
 }
 
 export default UnwatchedMovies;
-// 🦖
