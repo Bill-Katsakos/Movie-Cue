@@ -22,7 +22,9 @@ function Watchlist() {
   //   ________Retrieving all the movies _______
   async function getAllMovies() {
     try {
-      let res = await axios.get("http://localhost:4000/movies");
+      let res = await axios.get("http://localhost:4000/movies/user", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       setMovies(res.data.reverse());
       console.log(res.data);
     } catch (error) {
