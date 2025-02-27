@@ -30,6 +30,7 @@ function Navbar() {
     }
   }
 
+// console.log(decodedToken);
 
 
   return (
@@ -41,7 +42,7 @@ function Navbar() {
           gap: "10px",
         }}
       >
-        <h4> {decodedToken && `Welcome ${decodedToken.email}`}</h4> 
+        <h4> {decodedToken && `Welcome ${decodedToken.username}`}</h4> 
         {token ? ( 
           <>
             <li>

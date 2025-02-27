@@ -102,16 +102,16 @@ const Movie = mongoose.model("Movie", movieSchema);
 
 // get all Movies
 
-const getAllMovies = async (req, res) => {
-  try {
-    let allMovies = await Movie.find().populate("user", "-password");
-    res.send(allMovies);
-  } catch (error) {
-    res.send(error);
-  }
-};
+// const getAllMovies = async (req, res) => {
+//   try {
+//     let allMovies = await Movie.find().populate("user", "-password");
+//     res.send(allMovies);
+//   } catch (error) {
+//     res.send(error);
+//   }
+// };
 
-app.get("/movies", getAllMovies); 
+// app.get("/movies", getAllMovies); 
 
 // __________Create a Movie________
 const createMovie = async (req, res) => {
@@ -276,6 +276,7 @@ const loginUser = async (req, res) => {
     let payload = {
       userId: oldRegisteredUser._id,
       email: oldRegisteredUser.email,
+      username: oldRegisteredUser.username,
     };
     let token = await jwt.sign(payload, process.env.SECRET_KEY
         // ,{
