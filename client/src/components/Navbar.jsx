@@ -1,17 +1,12 @@
-import React from "react";
 import { Link, useNavigate } from "react-router-dom"; 
-
-import { jwtDecode } from "jwt-decode";
 
 function Navbar() { 
   let token = null;
-  let decodedToken = null;
   const navigate = useNavigate();
 
   try {
     if (localStorage.getItem("token")) { 
       token = localStorage.getItem("token");
-      decodedToken = jwtDecode(token);
     }
   } catch (error) {
     console.log(error);
@@ -32,48 +27,60 @@ function Navbar() {
 
 
   return (
-    <div>
-      <ul
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-        }}
-      >
-        <h4> {decodedToken && `Welcome ${decodedToken.username}`}</h4> 
-        {token ? ( 
+    <nav className="navbar custom-navbar">
+    <div className="container d-flex justify-content-between align-items-center">
+      <ul className="navbar-nav d-flex flex-row align-items-center left-links">
+        {token ? (
           <>
-            <li>
-              <Link to="/find-movie">Find Movie</Link>
+            <li className="nav-item">
+              <Link className="nav-link" to="/find-movie">
+                Find
+              </Link>
             </li>
-            <li>
-              <Link to="/watchlist">Watchlist</Link>
+            <li className="nav-item">
+              <Link className="nav-link" to="/watchlist">
+                Watchlist
+              </Link>
             </li>
-            <li>
-              <Link to="/unwatched-movies">Unwatched Movies</Link>
-            </li>
-            <li>
-              <Link to="/" onClick={handleLogout}> 
-                Logout
+            <li className="nav-item">
+              <Link className="nav-link" to="/unwatched-movies">
+                Unwatched
               </Link>
             </li>
           </>
         ) : (
-          <> 
-            {" "}
-            <li>
-              <Link to="/">Home</Link>
+          <li className="nav-item">
+            <Link className="nav-link" to="/">
+              Home
+            </Link>
+          </li>
+        )}
+      </ul>
+
+      <ul className="navbar-nav d-flex flex-row align-items-center right-links">
+        {token ? (
+          <li className="nav-item">
+            <Link className="nav-link" to="/" onClick={handleLogout}>
+              Logout
+            </Link>
+          </li>
+        ) : (
+          <>
+            <li className="nav-item">
+              <Link className="nav-link" to="/login">
+                Login
+              </Link>
             </li>
-            <li>
-              <Link to="/login">Login</Link>
-            </li>
-            <li>
-              <Link to="/register">Register</Link>
+            <li className="nav-item">
+              <Link className="nav-link" to="/register">
+                Register
+              </Link>
             </li>
           </>
         )}
       </ul>
     </div>
+  </nav>
   );
 }
 

@@ -1,0 +1,32 @@
+@font-face {
+    font-family: 'Cera Pro';
+    src: url('./assets/fonts/CeraPro-Regular.ttf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    font-family: 'Cera Pro', sans-serif !important;
+    /* box-sizing: border-box !important; */
+}
+
+.custom-navbar {
+    background-color: #fff;
+    box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.05);
+    padding: 10px 20px;
+}
+
+.left-links {
+display: flex;
+gap: 10px;
+margin: 0;
+padding: 0;
+}
+
+.right-links {
+display: flex;
+gap: 10px;
+margin: 0;
+padding: 0;
+}
+/* 🦖 */
