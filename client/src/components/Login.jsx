@@ -24,25 +24,34 @@ function Login() {
     }
   }
   return (
-    <div>
+    <div className="d-flex flex-column justify-content-center align-items-center text-center mt-5">
       <h1>Login</h1>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          value={email}
-          placeholder="email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          value={password}
-          placeholder="password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <input type="submit" value="Login" />
+      <form onSubmit={handleLogin} className="w-50">
+        <div className="mb-3">
+          <input
+            type="email"
+            value={email}
+            placeholder="Email"
+            onChange={(e) => setEmail(e.target.value)}
+            className="form-control"
+          />
+        </div>
+        <div className="mb-3">
+          <input
+            type="password"
+            value={password}
+            placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
+            className="form-control"
+          />
+        </div>
+        <button type="submit" className="btn btn-primary">
+          Login
+        </button>
       </form>
     </div>
   );
+  
 }
 
 export default Login;
