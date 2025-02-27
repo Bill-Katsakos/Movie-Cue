@@ -8,6 +8,7 @@
 * {
     font-family: 'Cera Pro', sans-serif !important;
     /* box-sizing: border-box !important; */
+
 }
 
 .custom-navbar {
@@ -28,5 +29,16 @@ display: flex;
 gap: 10px;
 margin: 0;
 padding: 0;
+}
+
+.poster {
+    /* max-width: 150px !important; */
+    border-radius: 4px;
+}
+
+.card-watchlist {
+    /* max-width: 300px !important; */
+    font-size: small !important;
+    /* font-size: 0.8rem !important; */
 }
 /* 🦖 */

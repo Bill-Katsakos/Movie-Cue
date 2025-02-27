@@ -49,33 +49,49 @@ function UnwatchedMovies() {
   }, [navigate]);
 
   return (
-    <>
-      <h1>My Unwatched Movies</h1>
-      {movies.map((movie) => (
-        <div
-          style={{
-            border: "1px solid black",
-            padding: "10px",
-            margin: "4px",
-          }}
-          key={movie._id}
-        >
-          <h3>{movie.title}</h3>
-          <p>Year: {movie.year}</p>
-          <p>Type: {movie.type}</p>
-          <p>IMDB Rating: ⭐️ {movie.imdbRating}/10</p>
-          <p>Plot: {movie.plot}</p>
-          {movie.poster && movie.poster !== "N/A" && (
-            <img
-              src={movie.poster}
-              alt={movie.title}
-              style={{ width: "100px" }}
-            />
-          )}
-        </div>
-      ))}
-    </>
+    <div className="container">
+      <h1 className="my-4">My Unwatched Movies</h1>
+      <div className="row g-0">
+        {movies.map((movie) => (
+          <div key={movie._id} className="col-md-6 col-lg-4 mb-4">
+            <div className="card h-100">
+              <div className="card-body p-1">
+                <div className="row">
+                  <div className="col-6">
+                    <h5 className="card-title">{movie.title}</h5>
+                    <p className="card-text mb-1">
+                      <strong>Year:</strong> {movie.year}
+                    </p>
+                    <p className="card-text mb-1">
+                      <strong>Type:</strong> {movie.type}
+                    </p>
+                    <p className="card-text mb-1">
+                      <strong>IMDB Rating:</strong> ⭐ {movie.imdbRating}/10
+                    </p>
+                  </div>
+                  <div className="col-6 d-flex align-items-center justify-content-center">
+                    {movie.poster && movie.poster !== "N/A" && (
+                      <img
+                        src={movie.poster}
+                        alt={movie.title}
+                        className="img-fluid poster-small"
+                      />
+                    )}
+                  </div>
+                </div>
+                <div className="mt-3">
+                  <p className="card-text">
+                    <strong>Plot:</strong> {movie.plot}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
+  
 }
 
 export default UnwatchedMovies;

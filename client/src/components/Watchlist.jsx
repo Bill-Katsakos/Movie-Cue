@@ -108,58 +108,60 @@ function Watchlist() {
 
 
   return (
-    <div>
+    <div className="container">
       <h2>Watchlist:</h2>
-      {movies.map((movie) => {
-        return (
-          <div key={movie._id}>
-
-            <div 
-            className={movie.watched ? "watched" : ""}
-            style={{
-                display: "flex",
-                border: "1px solid black",
-                padding: "10px",
-                margin: "4px",
-            }}
-            >
-                <div>
-
-            <input
-              type="checkbox"
-              checked={movie.watched}
-              onChange={(e) => toggleStatus(e, movie._id)}
-            />
+      <div className="row g-0">
+        {movies.map((movie) => (
+          <div key={movie._id} className="col-md-6 col-lg-4 mb-4">
+            <div className="card h-100">
+              <div className="card-body card-watchlist p-1">
+                {/* Internal layout: tape elements */}
+                <div className="row">
+                  <div className="col-6">
+                    <h5 className="card-title">{movie.title}</h5>
+                    <p className="card-text mb-1">
+                      <strong>Year:</strong> {movie.year}
+                    </p>
+                    <p className="card-text mb-1">
+                      <strong>Type:</strong> {movie.type}
+                    </p>
+                    <p className="card-text mb-1">
+                      <strong>Rating:</strong> ⭐ {movie.imdbRating}/10
+                    </p>
+                    <div>
+                      <input
+                        type="checkbox"
+                        checked={movie.watched}
+                        onChange={(e) => toggleStatus(e, movie._id)}
+                      />
+                      <label className="ms-1">Watched</label>
+                    </div>
+                    <button
+                      className="btn btn-danger btn-sm mt-2"
+                      onClick={() => deleteMovie(movie._id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                  <div className="col-6 d-flex align-items-center justify-content-center">
+                    {movie.poster && movie.poster !== "N/A" && (
+                      <img
+                        src={movie.poster}
+                        alt={movie.title}
+                        className="img-fluid poster"
+                      />
+                    )}
+                  </div>
                 </div>
-                <div>
-              <h3>{movie.title}</h3>
-              <p>Year: {movie.year}</p>
-              <p>Type: {movie.type}</p>
-              <p>IMDB Rating: ⭐️ {movie.imdbRating}/10</p>
-              <p
-              style={{width: "500px"}}
-              >Plot: {movie.plot}</p>
-                    
+                {/* Description below the data and image */}
+                <div className="mt-3">
+                  <p className="card-text">{movie.plot}</p>
                 </div>
-                <div>
-              {movie.poster && movie.poster !== "N/A" && (
-                <img
-                  src={movie.poster}
-                  alt={movie.title}
-                  style={{ width: "100px" }}
-                />
-              )}
-
-                </div>
-              <div>
-                <button onClick={() => deleteMovie(movie._id)}>Delete</button>
               </div>
-               
             </div>
-
           </div>
-        );
-      })}
+        ))}
+      </div>
     </div>
   );
 }

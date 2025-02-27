@@ -62,17 +62,23 @@ function AddMovie() {
   async function searchOMDB(e) {
     e.preventDefault();
     setOmdbError("");
-
+  
+    const trimmedQuery = omdbQuery.trim();
+    if (trimmedQuery === "") {
+      setOmdbQuery("");
+      return;
+    }
+  
     try {
-      const searchRes = await axios.get("http://localhost:4000/api/omdb", {
-        params: { s: omdbQuery },
+      const res = await axios.get("http://localhost:4000/api/omdb", {
+        params: { s: trimmedQuery },
       });
-
-      if (searchRes.data.Error) {
-        setOmdbError(searchRes.data.Error);
+  
+      if (res.data.Error) {
+        setOmdbError(res.data.Error);
         setOmdbResults([]);
       } else {
-        const movies = searchRes.data.Search;
+        const movies = res.data.Search;
         const detailedMovies = await Promise.all(
           movies.map(async (movie) => {
             const detailRes = await axios.get("http://localhost:4000/api/omdb", {
@@ -88,15 +94,29 @@ function AddMovie() {
             };
           })
         );
-
-        detailedMovies.sort((a, b) => parseInt(b.Year) - parseInt(a.Year));
+  
+        detailedMovies.sort((a, b) => {
+          const queryLower = trimmedQuery.toLowerCase();
+          const aMatches = a.Title.toLowerCase() === queryLower;
+          const bMatches = b.Title.toLowerCase() === queryLower;
+        
+          // If only one matches, then it comes first
+          if (aMatches && !bMatches) return -1;
+          if (!aMatches && bMatches) return 1;
+        
+          // If both match or none, then sort by date (in reverse)
+          return parseInt(b.Year) - parseInt(a.Year);
+        });
+        
         setOmdbResults(detailedMovies);
+        setOmdbQuery("")
       }
     } catch (error) {
       console.error(error);
       setOmdbError("Error when communicating with the OMDB API.");
     }
   }
+  
 
   async function addToWatchlist(selectedMovie) {
     try {
@@ -155,54 +175,76 @@ function AddMovie() {
   }
 
   return (
-    <div>
-      <h2>Search movies</h2>
-      <form onSubmit={searchOMDB}>
-        <input
-          type="text"
-          placeholder="Enter movie name..."
-          value={omdbQuery}
-          onChange={(e) => setOmdbQuery(e.target.value)}
-        />
-        <button type="submit">Search</button>
+    <div className="container">
+      <h2 className="my-4">Search Movies</h2>
+      <form onSubmit={searchOMDB} className="mb-4">
+        <div className="input-group">
+          <input
+            type="text"
+            className="form-control "
+            placeholder="Enter film or series name..."
+            value={omdbQuery}
+            onChange={(e) => setOmdbQuery(e.target.value)}
+          />
+          <button type="submit" className="btn btn-primary">
+            Search
+          </button>
+        </div>
       </form>
-
-      {omdbError && <p style={{ color: "red" }}>{omdbError}</p>}
-
-      <div>
+  
+      {omdbError && <p className="text-danger">{omdbError}</p>}
+  
+      <div className="row g-0">
         {omdbResults.length > 0 &&
           omdbResults.map((movie) => {
             const isInWatchlist = !!imdbToMovieIdMap[movie.imdbID];
             return (
-              <div
-                key={movie.imdbID}
-                style={{
-                  border: "1px dashed gray",
-                  margin: "8px",
-                  padding: "8px",
-                }}
-              >
-                <h3>{movie.Title}</h3>
-                <p>Year: {movie.Year}</p>
-                <p>Type: {movie.Type}</p>
-                <p>IMDB Rating: ⭐️ {movie.imdbRating}/10</p>
-                <p>Description: {movie.Plot}</p>
-                {movie.Poster !== "N/A" && (
-                  <img
-                    src={movie.Poster}
-                    alt={movie.Title}
-                    style={{ width: "100px" }}
-                  />
-                )}
-                <button onClick={() => toggleWatchlist(movie)}>
-                  {isInWatchlist ? "Added to watchlist" : "Add to watchlist"}
-                </button>
+              <div key={movie.imdbID} className="col-md-6 col-lg-4 mb-4">
+                <div className="card h-100">
+                  <div className="card-body p-1">
+                    <div className="row">
+                      <div className="col-6">
+                        <h5 className="card-title">{movie.Title}</h5>
+                        <p className="card-text mb-1">
+                          <strong>Year:</strong> {movie.Year}
+                        </p>
+                        <p className="card-text mb-1">
+                          <strong>Type:</strong> {movie.Type}
+                        </p>
+                        <p className="card-text mb-1">
+                          <strong>IMDB Rating:</strong> ⭐ {movie.imdbRating}/10
+                        </p>
+                        <button
+                        className="btn btn-secondary btn-sm mt-2"
+                        onClick={() => toggleWatchlist(movie)}
+                      >
+                        {isInWatchlist ? "Added to watchlist" : "Add to watchlist"}
+                      </button>
+                      </div>
+                      <div className="col-6 d-flex align-items-center justify-content-center">
+                        {movie.Poster !== "N/A" && (
+                          <img
+                            src={movie.Poster}
+                            alt={movie.Title}
+                            className="img-fluid poster"
+                          />
+                        )}
+                      </div>
+                    </div>
+                    <div className="mt-3">
+                      <p className="card-text">
+                        <strong>Description:</strong> {movie.Plot}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             );
           })}
       </div>
     </div>
   );
+  
 }
 
 export default AddMovie;
