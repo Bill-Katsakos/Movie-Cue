@@ -1,7 +1,9 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function MovieForm() {
+  const navigate = useNavigate();
   const [omdbResults, setOmdbResults] = useState([]);
   const [omdbQuery, setOmdbQuery] = useState("");
   const [omdbError, setOmdbError] = useState("");
@@ -9,9 +11,33 @@ function MovieForm() {
   const [userWatchlist, setUserWatchlist] = useState([]);
   const [imdbToMovieIdMap, setImdbToMovieIdMap] = useState({});
 
+  // Token check when the component loads
   useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/");
+    }
     fetchUserWatchlist();
-  }, []);
+  }, [navigate]);
+
+  // Visibility change for token checking when the tab becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        const storedToken = localStorage.getItem("token");
+        if (!storedToken) {
+          navigate("/");
+        } else {
+          // If there is a token, we can update the data
+          fetchUserWatchlist();
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [navigate]);
 
   async function fetchUserWatchlist() {
     try {
@@ -32,7 +58,7 @@ function MovieForm() {
     }
   }
 
-  // -----------Search on OMDB -----------
+  // ----------- Search on OMDB -----------
   async function searchOMDB(e) {
     e.preventDefault();
     setOmdbError("");
@@ -49,15 +75,12 @@ function MovieForm() {
         const movies = searchRes.data.Search;
         const detailedMovies = await Promise.all(
           movies.map(async (movie) => {
-            const detailRes = await axios.get(
-              "http://localhost:4000/api/omdb",
-              {
-                params: {
-                  i: movie.imdbID,
-                  plot: "short",
-                },
-              }
-            );
+            const detailRes = await axios.get("http://localhost:4000/api/omdb", {
+              params: {
+                i: movie.imdbID,
+                plot: "short",
+              },
+            });
             return {
               ...movie,
               imdbRating: detailRes.data.imdbRating || "N/A",
@@ -95,7 +118,6 @@ function MovieForm() {
         }
       );
 
-      // alert(res.data.msg);
       await fetchUserWatchlist();
     } catch (error) {
       console.log(error);
@@ -116,7 +138,6 @@ function MovieForm() {
           movieId,
         },
       });
-      // alert(res.data.msg);
       await fetchUserWatchlist();
     } catch (error) {
       console.log(error);
@@ -185,3 +206,4 @@ function MovieForm() {
 }
 
 export default MovieForm;
+// 🦖

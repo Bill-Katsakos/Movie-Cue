@@ -1,18 +1,20 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function UserMovies() {
+  const navigate = useNavigate();
   const [movies, setMovies] = useState([]);
 
-  // 1) Φέρνουμε από τον server ΟΛΕΣ τις ταινίες του χρήστη
-  // 2) Φιλτράρουμε τοπικά τις ταινίες που ΔΕΝ είναι watched
+  // 1) Fetch all user movies from the server
+  // 2) Locally filter movies that are NOT watched
   async function getUserMovies() {
     try {
       let res = await axios.get("http://localhost:4000/movies/user", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
 
-      // Φιλτράρουμε μόνο τις ταινίες που έχουν watched === false
+      // Filter only movies with watched === false
       const unWatched = res.data.filter((movie) => !movie.watched);
       setMovies(unWatched);
     } catch (error) {
@@ -20,9 +22,31 @@ function UserMovies() {
     }
   }
 
+  // Initial fetch of user movies when the component mounts
   useEffect(() => {
     getUserMovies();
   }, []);
+
+  // Visibility change: check token when the tab becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        const storedToken = localStorage.getItem("token");
+        if (!storedToken) {
+          // If token does not exist, redirect to the home page
+          navigate("/");
+        } else {
+          // If token exists, refresh the user movies list
+          getUserMovies();
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [navigate]);
 
   return (
     <>
@@ -36,7 +60,6 @@ function UserMovies() {
           }}
           key={movie._id}
         >
-          {/* Προβολή των δεδομένων που έχεις ορίσει στο schema: title, year, κλπ. */}
           <h3>{movie.title}</h3>
           <p>Year: {movie.year}</p>
           <p>Type: {movie.type}</p>
@@ -47,15 +70,7 @@ function UserMovies() {
               src={movie.poster}
               alt={movie.title}
               style={{ width: "100px" }}
-            />)}
-
-
-          {/* Αν χρειάζεται, έλεγξε ότι υπάρχει user (σε περίπτωση που δεν επιστρέφεται) */}
-          {movie.user && (
-            <>
-              <h6>{movie.user.username}</h6>
-              <h6>{movie.user.email}</h6>
-            </>
+            />
           )}
         </div>
       ))}
@@ -64,3 +79,4 @@ function UserMovies() {
 }
 
 export default UserMovies;
+// 🦖

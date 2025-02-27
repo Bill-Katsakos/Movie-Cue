@@ -1,42 +1,65 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 function Watchlist() {
+  const navigate = useNavigate();
   const [movies, setMovies] = useState([]);
-
-  // ----- token -------
-  let token = null;
+  const token = localStorage.getItem("token");
   let decodedToken = null;
 
   try {
-    if (localStorage.getItem("token")) {
-      token = localStorage.getItem("token");
+    if (token) {
       decodedToken = jwtDecode(token);
-      console.log(decodedToken);
     }
   } catch (error) {
     console.log(error);
   }
 
-  //   ________Retrieving all the movies _______
+  // Function to load movies
   async function getAllMovies() {
     try {
       let res = await axios.get("http://localhost:4000/movies/user", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setMovies(res.data.reverse());
-      console.log(res.data);
     } catch (error) {
       console.log(error);
     }
   }
 
+  // Check the token when the component loads
   useEffect(() => {
-    getAllMovies();
-  }, []);
+    if (!token) {
+      navigate("/");
+    } else {
+      getAllMovies();
+    }
+  }, [navigate, token]);
 
-  //   ________Toggle watched movies_______
+  // Detect when the tab becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        const storedToken = localStorage.getItem("token");
+        if (!storedToken) {
+          // If there is no token, redirect to the home page
+          navigate("/");
+        } else {
+          // If there is a token, you can refresh the data if needed
+          getAllMovies();
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [navigate]);
+
+  // Function to toggle "watched" status
   async function toggleStatus(e, id) {
     const isChecked = e.target.checked;
     setMovies((prevMovies) =>
@@ -57,7 +80,7 @@ function Watchlist() {
     }
   }
 
-  //   ________Delete a movie _______
+  // Function to delete a movie
   async function deleteMovie(id) {
     const confirmDeletion = window.confirm(
       "Are you sure you want to delete this movie? 🤔"
@@ -78,22 +101,18 @@ function Watchlist() {
     }
   }
 
+  if (!token) {
+    return null; // Returns null if there is no token
+  }
+
+
+
   return (
     <div>
-      {/* <h1>Welcome to Movie Cue</h1> */}
       <h2>Watchlist:</h2>
       {movies.map((movie) => {
         return (
-          <div
-        //   style={{
-        //     display: "flex",
-        //     border: "1px solid black",
-        //     padding: "10px",
-        //     margin: "4px",
-        //   }}
-          
-            key={movie._id}
-          >
+          <div key={movie._id}>
 
             <div 
             className={movie.watched ? "watched" : ""}
@@ -132,14 +151,10 @@ function Watchlist() {
               )}
 
                 </div>
-                <div>
-            {token && movie.user && movie.user._id === decodedToken.userId ? (
               <div>
                 <button onClick={() => deleteMovie(movie._id)}>Delete</button>
               </div>
-            ) : null}
-
-                </div>
+               
             </div>
 
           </div>

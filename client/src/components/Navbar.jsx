@@ -30,8 +30,6 @@ function Navbar() {
     }
   }
 
-// console.log(decodedToken);
-
 
   return (
     <div>
