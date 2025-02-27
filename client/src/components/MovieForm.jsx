@@ -1,13 +1,36 @@
 import axios from "axios";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 
 function MovieForm() {
-  const navigate = useNavigate();
-
   const [omdbResults, setOmdbResults] = useState([]);
   const [omdbQuery, setOmdbQuery] = useState("");
   const [omdbError, setOmdbError] = useState("");
+
+  const [userWatchlist, setUserWatchlist] = useState([]);
+  const [imdbToMovieIdMap, setImdbToMovieIdMap] = useState({});
+
+  useEffect(() => {
+    fetchUserWatchlist();
+  }, []);
+
+  async function fetchUserWatchlist() {
+    try {
+      const res = await axios.get("http://localhost:4000/movies/user", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      setUserWatchlist(res.data);
+
+      const map = {};
+      res.data.forEach((m) => {
+        if (m.imdbID) {
+          map[m.imdbID] = m._id;
+        }
+      });
+      setImdbToMovieIdMap(map);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   // -----------Search on OMDB -----------
   async function searchOMDB(e) {
@@ -15,27 +38,26 @@ function MovieForm() {
     setOmdbError("");
 
     try {
-      // Initial search call with the parameter s
       const searchRes = await axios.get("http://localhost:4000/api/omdb", {
-        params: {
-          s: omdbQuery,
-        },
+        params: { s: omdbQuery },
       });
 
       if (searchRes.data.Error) {
         setOmdbError(searchRes.data.Error);
         setOmdbResults([]);
       } else {
-        // Download detailed data for each film based on the imdbID
         const movies = searchRes.data.Search;
         const detailedMovies = await Promise.all(
           movies.map(async (movie) => {
-            const detailRes = await axios.get("http://localhost:4000/api/omdb", {
-              params: {
-                i: movie.imdbID,
-                plot: "short",
-              },
-            });
+            const detailRes = await axios.get(
+              "http://localhost:4000/api/omdb",
+              {
+                params: {
+                  i: movie.imdbID,
+                  plot: "short",
+                },
+              }
+            );
             return {
               ...movie,
               imdbRating: detailRes.data.imdbRating || "N/A",
@@ -44,7 +66,6 @@ function MovieForm() {
           })
         );
 
-        // Sorting of films in descending order of year
         detailedMovies.sort((a, b) => parseInt(b.Year) - parseInt(a.Year));
         setOmdbResults(detailedMovies);
       }
@@ -54,7 +75,6 @@ function MovieForm() {
     }
   }
 
-  // ----------- Add to Watchlist -----------
   async function addToWatchlist(selectedMovie) {
     try {
       const newMovieInfo = {
@@ -64,6 +84,7 @@ function MovieForm() {
         imdbRating: selectedMovie.imdbRating,
         plot: selectedMovie.Plot,
         poster: selectedMovie.Poster,
+        imdbID: selectedMovie.imdbID, 
       };
 
       const res = await axios.post(
@@ -74,11 +95,41 @@ function MovieForm() {
         }
       );
 
-      alert(res.data.msg);
-      // navigate("/");
+      // alert(res.data.msg);
+      await fetchUserWatchlist();
     } catch (error) {
       console.log(error);
       alert(error.response?.data?.msg || "Something went wrong.");
+    }
+  }
+
+  async function removeFromWatchlist(selectedMovie) {
+    try {
+      const movieId = imdbToMovieIdMap[selectedMovie.imdbID];
+      if (!movieId) return;
+
+      const res = await axios.delete("http://localhost:4000/movies/delete", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        data: {
+          movieId,
+        },
+      });
+      // alert(res.data.msg);
+      await fetchUserWatchlist();
+    } catch (error) {
+      console.log(error);
+      alert(error.response?.data?.msg || "Something went wrong.");
+    }
+  }
+
+  function toggleWatchlist(movie) {
+    const isInWatchlist = !!imdbToMovieIdMap[movie.imdbID];
+    if (isInWatchlist) {
+      removeFromWatchlist(movie);
+    } else {
+      addToWatchlist(movie);
     }
   }
 
@@ -99,32 +150,35 @@ function MovieForm() {
 
       <div>
         {omdbResults.length > 0 &&
-          omdbResults.map((movie) => (
-            <div
-              key={movie.imdbID}
-              style={{
-                border: "1px dashed gray",
-                margin: "8px",
-                padding: "8px",
-              }}
-            >
-              <h3>{movie.Title}</h3>
-              <p>Year: {movie.Year}</p>
-              <p>Type: {movie.Type}</p>
-              <p>IMDB Rating: ⭐️ {movie.imdbRating}/10</p>
-              <p>Description: {movie.Plot}</p>
-              {movie.Poster !== "N/A" && (
-                <img
-                  src={movie.Poster}
-                  alt={movie.Title}
-                  style={{ width: "100px" }}
-                />
-              )}
-              <button onClick={() => addToWatchlist(movie)}>
-                add to watchlist
-              </button>
-            </div>
-          ))}
+          omdbResults.map((movie) => {
+            const isInWatchlist = !!imdbToMovieIdMap[movie.imdbID];
+            return (
+              <div
+                key={movie.imdbID}
+                style={{
+                  border: "1px dashed gray",
+                  margin: "8px",
+                  padding: "8px",
+                }}
+              >
+                <h3>{movie.Title}</h3>
+                <p>Year: {movie.Year}</p>
+                <p>Type: {movie.Type}</p>
+                <p>IMDB Rating: ⭐️ {movie.imdbRating}/10</p>
+                <p>Description: {movie.Plot}</p>
+                {movie.Poster !== "N/A" && (
+                  <img
+                    src={movie.Poster}
+                    alt={movie.Title}
+                    style={{ width: "100px" }}
+                  />
+                )}
+                <button onClick={() => toggleWatchlist(movie)}>
+                  {isInWatchlist ? "Added to watchlist" : "Add to watchlist"}
+                </button>
+              </div>
+            );
+          })}
       </div>
     </div>
   );

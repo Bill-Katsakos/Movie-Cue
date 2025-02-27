@@ -43,15 +43,17 @@ const User = mongoose.model("User", userSchema);
 
 // ___________Movies schema_________
 const movieSchema = new mongoose.Schema({
-  title: String,
-  year: String,
-  type: String,
-  imdbRating: String,
-  plot: String,
-  poster: String,
-  watched: { type: Boolean, default: false },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-});
+    title: String,
+    year: String,
+    type: String,
+    imdbRating: String,
+    plot: String,
+    poster: String,
+    imdbID: String,  
+    watched: { type: Boolean, default: false },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  });
+  
 
 // Movie Model
 const Movie = mongoose.model("Movie", movieSchema);
@@ -115,7 +117,15 @@ app.get("/movies", getAllMovies);
 const createMovie = async (req, res) => {
     try {
       let userId = req.user.userId;
-      const { title, year, type, imdbRating, plot, poster } = req.body;
+      const { title, year, type, imdbRating, plot, poster, imdbID } = req.body;
+  
+      // Check if it already exists
+      const existingMovie = await Movie.findOne({ user: userId, imdbID });
+      if (existingMovie) {
+        return res.status(400).json({
+          msg: "The film is already on your watch list.",
+        });
+      }
   
       let createdMovie = await Movie.create({
         title,
@@ -124,6 +134,7 @@ const createMovie = async (req, res) => {
         imdbRating,
         plot,
         poster,
+        imdbID,
         user: userId,
       });
   
@@ -132,6 +143,7 @@ const createMovie = async (req, res) => {
       res.send(error);
     }
   };
+  
 app.post("/movies/create", authMiddleware, createMovie);
 
 // _________Get specific user Movies_________
