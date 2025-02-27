@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function UserMovies() {
+function UnwatchedMovies() {
   const navigate = useNavigate();
   const [movies, setMovies] = useState([]);
 
@@ -78,5 +78,5 @@ function UserMovies() {
   );
 }
 
-export default UserMovies;
+export default UnwatchedMovies;
 // 🦖

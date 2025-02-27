@@ -5,8 +5,9 @@ import Watchlist from "./components/Watchlist";
 import Navbar from "./components/Navbar";
 import Register from "./components/Register";
 import Home from "./components/Home";
-import MovieForm from "./components/MovieForm";
-import UserMovies from "./components/UserMovies";
+import AddMovie from "./components/AddMovie";
+import UnwatchedMovies from "./components/UnwatchedMovies";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
 
@@ -20,8 +21,8 @@ function App() {
           <Route path="/watchlist" element={<Watchlist />} />``
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/newmovie" element={<MovieForm />} />
-          <Route path="/usermovies" element={<UserMovies />} />
+          <Route path="/find-movie" element={<AddMovie />} />
+          <Route path="/unwatched-movies" element={<UnwatchedMovies />} />
         </Routes>
       </BrowserRouter>
     </>

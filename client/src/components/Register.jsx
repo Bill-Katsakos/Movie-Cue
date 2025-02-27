@@ -26,9 +26,9 @@ function Register() {
         password,
       });
       
-      // Store token and redirect to "/newmovie"
+      // Store token and redirect to "/find-movie"
       localStorage.setItem("token", loginRes.data.token);
-      navigate("/newmovie");
+      navigate("/find-movie");
     } catch (error) {
       console.log(error);
     }

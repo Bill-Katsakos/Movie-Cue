@@ -11,7 +11,7 @@ function Home() {
       if (document.visibilityState === "visible") {
         const token = localStorage.getItem("token");
         if (token) {
-          navigate("/newmovie");
+          navigate("/find-movie");
         }
       }
     };

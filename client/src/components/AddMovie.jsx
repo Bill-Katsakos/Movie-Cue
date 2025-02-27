@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function MovieForm() {
+function AddMovie() {
   const navigate = useNavigate();
   const [omdbResults, setOmdbResults] = useState([]);
   const [omdbQuery, setOmdbQuery] = useState("");
@@ -205,5 +205,5 @@ function MovieForm() {
   );
 }
 
-export default MovieForm;
+export default AddMovie;
 // 🦖

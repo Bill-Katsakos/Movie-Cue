@@ -44,13 +44,13 @@ function Navbar() {
         {token ? ( 
           <>
             <li>
-              <Link to="/newmovie">Find Movie</Link>
+              <Link to="/find-movie">Find Movie</Link>
             </li>
             <li>
               <Link to="/watchlist">Watchlist</Link>
             </li>
             <li>
-              <Link to="/usermovies">Unwatched Movies</Link>
+              <Link to="/unwatched-movies">Unwatched Movies</Link>
             </li>
             <li>
               <Link to="/" onClick={handleLogout}> 
