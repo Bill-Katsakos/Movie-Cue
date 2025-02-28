@@ -80,10 +80,10 @@ function UnwatchedMovies() {
               <strong>Type:</strong> {randomMovie.type}
             </p>
             <p className="card-text mt-1">
-              <strong>IMDB Rating:</strong> ⭐ {randomMovie.imdbRating}/10
+              <strong>IMDB Rating:</strong> {randomMovie.imdbRating}/10
             </p>
             <p className="card-text">
-              <strong>Plot:</strong> {randomMovie.plot}
+              {randomMovie.plot}
             </p>
           </div>
         </div>
@@ -127,7 +127,7 @@ function UnwatchedMovies() {
                       <strong>Type:</strong> {movie.type}
                     </p>
                     <p className="card-text mb-1">
-                      <strong>IMDB Rating:</strong> ⭐ {movie.imdbRating}/10
+                      <strong>IMDB Rating:</strong> {movie.imdbRating}/10
                     </p>
                   </div>
                   <div className="col-6 d-flex align-items-center justify-content-center">
@@ -142,7 +142,7 @@ function UnwatchedMovies() {
                 </div>
                 <div className="mt-3">
                   <p className="card-text">
-                    <strong>Plot:</strong> {movie.plot}
+                    {movie.plot}
                   </p>
                 </div>
               </div>
@@ -155,3 +155,4 @@ function UnwatchedMovies() {
 }
 
 export default UnwatchedMovies;
+// 🦖

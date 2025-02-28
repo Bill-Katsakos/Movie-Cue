@@ -15,8 +15,6 @@
 
 * {
     font-family: 'Cera Pro', sans-serif !important;
-    /* box-sizing: border-box !important; */
-
 }
 
 body {
@@ -45,18 +43,17 @@ body {
 }
 
 #input {
-    /* border-radius: 5px !important;
-    border: 1.5px solid #0e172c !important;
-    padding: 4px 15px; */
-    /* background-color: var(--primary) !important; */
-    /* width: 15em;
-    height: 1.7em; */
     outline: none !important;
 }
+
 #input:focus {
     outline: none !important;
     box-shadow: none !important;
     border-color: #0e172c !important; 
+}
+
+.movie-checkbox {
+    accent-color: #16A085;
 }
 
 .left-links {
@@ -74,18 +71,35 @@ padding: 0;
 }
 
 .poster {
-    /* max-width: 150px !important; */
     border-radius: 4px;
 }
 
 .card-watchlist {
-    /* max-width: 300px !important; */
     font-size: small !important;
-    /* font-size: 0.8rem !important; */
 }
 
 .surprise-movie{
     width: 18rem
+}
+
+.bttn-search,
+.bttn-Add,
+.bttn-Login,
+.bttn-Register,
+.bttn-surpriseMe,
+.bttn-ShowAll {
+    background-color: var(--cosmic-purple) !important;
+    border-color: var(--cosmic-purple) !important;
+}
+
+.bttn-Added {
+    background-color: #16A085 !important;
+    border-color: #16A085 !important;
+}
+
+.bttn-Delete {
+    background-color: #C0392B !important;
+    border-color: #C0392B !important;
 }
 
 .bttn-search,
@@ -97,9 +111,6 @@ padding: 0;
 .bttn-ShowAll,
 .bttn-Delete {
     padding: 2px 5px !important; 
-    /* background-color: var(--dark-azure) !important;
-    border: 2px solid var(--midnight-blue) !important;
-    color: white !important; */
 }
 
 /* 🦖 */

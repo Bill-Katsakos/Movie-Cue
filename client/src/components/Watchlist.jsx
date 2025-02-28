@@ -109,7 +109,9 @@ function Watchlist() {
 
   return (
     <div className="container">
-      <h2>Watchlist:</h2>
+      <h1
+      className="my-4"
+      >Watchlist</h1>
       <div className="row g-0">
         {movies.map((movie) => (
           <div key={movie._id} className="col-md-6 col-lg-4 mb-4">
@@ -125,12 +127,15 @@ function Watchlist() {
                     <p className="card-text mb-1">
                       <strong>Type:</strong> {movie.type}
                     </p>
-                    <p className="card-text mb-1">
-                      <strong>Rating:</strong> ⭐ {movie.imdbRating}/10
+                    <p className="card-text mb-3">
+                      <strong>Rating:</strong> {movie.imdbRating}/10
                     </p>
-                    <div>
+                    <div
+                    className="mb-1"
+                    >
                       <input
                         type="checkbox"
+                        className="movie-checkbox align-middle"
                         checked={movie.watched}
                         onChange={(e) => toggleStatus(e, movie._id)}
                       />

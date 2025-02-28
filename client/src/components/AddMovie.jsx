@@ -176,14 +176,14 @@ function AddMovie() {
 
   return (
     <div className="container">
-      <h2 className="my-4">Search Movies/Series</h2>
+      <h1 className="my-4">Search Movies/Series</h1>
       <form onSubmit={searchOMDB} className="mb-4">
         <div className="input-group">
           <input
             type="text"
             className="form-control "
             id="input"
-            placeholder="Enter film or series name..."
+            placeholder="Enter movie or serie name..."
             value={omdbQuery}
             onChange={(e) => setOmdbQuery(e.target.value)}
           />
@@ -212,8 +212,8 @@ function AddMovie() {
                         <p className="card-text mb-1">
                           <strong>Type:</strong> {movie.Type}
                         </p>
-                        <p className="card-text mb-1">
-                          <strong>IMDB Rating:</strong> ⭐ {movie.imdbRating}/10
+                        <p className="card-text mb-3">
+                          <strong>IMDB Rating:</strong> {movie.imdbRating}/10
                         </p>
                         <button
                           className={`btn ${isInWatchlist ? "btn-danger bttn-Added" : "btn-secondary bttn-Add"} btn-sm mt-2`}
@@ -234,7 +234,7 @@ function AddMovie() {
                     </div>
                     <div className="mt-3">
                       <p className="card-text">
-                        <strong>Description:</strong> {movie.Plot}
+                        {movie.Plot}
                       </p>
                     </div>
                   </div>
