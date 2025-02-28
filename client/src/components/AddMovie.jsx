@@ -201,7 +201,7 @@ function AddMovie() {
             const isInWatchlist = !!imdbToMovieIdMap[movie.imdbID];
             return (
               <div key={movie.imdbID} className="col-md-6 col-lg-4 mb-4">
-                <div className="card h-100 movie-card">
+                <div className="card h-100 movie-card p-2">
                   <div className="card-body p-1">
                     <div className="row">
                       <div className="col-6">

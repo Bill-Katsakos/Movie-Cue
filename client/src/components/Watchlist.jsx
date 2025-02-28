@@ -113,7 +113,7 @@ function Watchlist() {
       <div className="row g-0">
         {movies.map((movie) => (
           <div key={movie._id} className="col-md-6 col-lg-4 mb-4">
-            <div className="card h-100  movie-card">
+            <div className="card h-100  movie-card p-2">
               <div className="card-body card-watchlist p-1">
                 {/* Internal layout: tape elements */}
                 <div className="row">

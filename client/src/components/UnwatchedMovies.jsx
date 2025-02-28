@@ -111,7 +111,7 @@ function UnwatchedMovies() {
       <div className="row g-0">
         {movies.map((movie) => (
           <div key={movie._id} className="col-md-6 col-lg-4 mb-4">
-            <div className="card h-100 movie-card">
+            <div className="card h-100 movie-card  p-2">
               <div className="card-body p-1">
                 <div className="row">
                   <div className="col-6">
@@ -131,7 +131,7 @@ function UnwatchedMovies() {
                       <img
                         src={movie.poster}
                         alt={movie.title}
-                        className="img-fluid poster-small"
+                        className="img-fluid poster-small poster"
                       />
                     )}
                   </div>
