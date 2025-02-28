@@ -216,11 +216,11 @@ function AddMovie() {
                           <strong>IMDB Rating:</strong> ⭐ {movie.imdbRating}/10
                         </p>
                         <button
-                        className="btn btn-secondary btn-sm mt-2"
-                        onClick={() => toggleWatchlist(movie)}
-                      >
-                        {isInWatchlist ? "Added to watchlist" : "Add to watchlist"}
-                      </button>
+                          className={`btn ${isInWatchlist ? "btn-danger" : "btn-secondary"} btn-sm mt-2`}
+                          onClick={() => toggleWatchlist(movie)}
+                        >
+                          {isInWatchlist ? "Added to watchlist" : "Add to watchlist"}
+                        </button>
                       </div>
                       <div className="col-6 d-flex align-items-center justify-content-center">
                         {movie.Poster !== "N/A" && (
