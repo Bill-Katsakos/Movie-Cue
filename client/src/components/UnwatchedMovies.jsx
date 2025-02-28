@@ -30,6 +30,7 @@ function UnwatchedMovies() {
     if (movies.length === 0) return;
     const randomIndex = Math.floor(Math.random() * movies.length);
     setRandomMovie(movies[randomIndex]);
+    window.scrollTo(0, 0);
   }
 
   // Initial fetch of user movies when the component mounts
@@ -89,7 +90,10 @@ function UnwatchedMovies() {
         {/* Button to return to the full list */}
         <button
           className="btn btn-secondary mt-2 mb-5 bttn-ShowAll"
-          onClick={() => setRandomMovie(null)}
+          onClick={() => {
+            setRandomMovie(null);
+            window.scrollTo(0, 0);
+          }}
         >
           Show All Unwatched
         </button>
