@@ -28,7 +28,7 @@ function Navbar() {
 
 
   return (
-    <nav className="navbar custom-navbar">
+    <nav className="navbar custom-navbar navb">
     <div className="container d-flex justify-content-between align-items-center">
       <ul className="navbar-nav d-flex flex-row align-items-center left-links">
         {token ? (

@@ -187,7 +187,7 @@ function AddMovie() {
             value={omdbQuery}
             onChange={(e) => setOmdbQuery(e.target.value)}
           />
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-primary bttn-search">
             Search
           </button>
         </div>
@@ -201,7 +201,7 @@ function AddMovie() {
             const isInWatchlist = !!imdbToMovieIdMap[movie.imdbID];
             return (
               <div key={movie.imdbID} className="col-md-6 col-lg-4 mb-4">
-                <div className="card h-100">
+                <div className="card h-100 movie-card">
                   <div className="card-body p-1">
                     <div className="row">
                       <div className="col-6">
@@ -216,7 +216,7 @@ function AddMovie() {
                           <strong>IMDB Rating:</strong> ⭐ {movie.imdbRating}/10
                         </p>
                         <button
-                          className={`btn ${isInWatchlist ? "btn-danger" : "btn-secondary"} btn-sm mt-2`}
+                          className={`btn ${isInWatchlist ? "btn-danger bttn-Added" : "btn-secondary bttn-Add"} btn-sm mt-2`}
                           onClick={() => toggleWatchlist(movie)}
                         >
                           {isInWatchlist ? "Added to watchlist" : "Add to watchlist"}

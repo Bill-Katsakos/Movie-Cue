@@ -62,7 +62,7 @@ function UnwatchedMovies() {
   if (randomMovie) {
     return (
       <div className="container d-flex flex-column align-items-center justify-content-center" style={{ minHeight: "80vh" }}>
-        <div className="card surprise-movie">
+        <div className="card surprise-movie  movie-card mt-2">
           {randomMovie.poster && randomMovie.poster !== "N/A" && (
             <img
               src={randomMovie.poster}
@@ -88,7 +88,7 @@ function UnwatchedMovies() {
         </div>
         {/* Button to return to the full list */}
         <button
-          className="btn btn-secondary mt-2"
+          className="btn btn-secondary mt-2 mb-5 bttn-ShowAll"
           onClick={() => setRandomMovie(null)}
         >
           Show All Unwatched
@@ -103,7 +103,7 @@ function UnwatchedMovies() {
       {/* Header with title and button */}
       <div className="d-flex justify-content-between align-items-center my-4">
         <h1 className="mb-0">Unwatched</h1>
-        <button className="btn btn-primary" onClick={surpriseMe}>
+        <button className="btn btn-primary bttn-surpriseMe" onClick={surpriseMe}>
           Surprise Me
         </button>
       </div>
@@ -111,7 +111,7 @@ function UnwatchedMovies() {
       <div className="row g-0">
         {movies.map((movie) => (
           <div key={movie._id} className="col-md-6 col-lg-4 mb-4">
-            <div className="card h-100">
+            <div className="card h-100 movie-card">
               <div className="card-body p-1">
                 <div className="row">
                   <div className="col-6">

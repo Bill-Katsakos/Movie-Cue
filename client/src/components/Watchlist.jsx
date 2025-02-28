@@ -113,7 +113,7 @@ function Watchlist() {
       <div className="row g-0">
         {movies.map((movie) => (
           <div key={movie._id} className="col-md-6 col-lg-4 mb-4">
-            <div className="card h-100">
+            <div className="card h-100  movie-card">
               <div className="card-body card-watchlist p-1">
                 {/* Internal layout: tape elements */}
                 <div className="row">
@@ -134,10 +134,10 @@ function Watchlist() {
                         checked={movie.watched}
                         onChange={(e) => toggleStatus(e, movie._id)}
                       />
-                      <label className="ms-1">Watched</label>
+                      <label className="ms-1">{movie.watched ? "Watched" : "Awaiting"}</label>
                     </div>
                     <button
-                      className="btn btn-danger btn-sm mt-2"
+                      className="btn btn-danger btn-sm mt-2 bttn-Delete"
                       onClick={() => deleteMovie(movie._id)}
                     >
                       Delete
