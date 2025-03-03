@@ -23,7 +23,8 @@ body {
 }
 
 .navb {
-    background-color: var(--deep-night) !important;
+    background: linear-gradient(135deg, var(--deep-night), var(--midnight-blue), var(--dark-azure), var(--cosmic-purple)) !important;
+    border-bottom-left-radius: 30px;
 }
 
 .nav-link {
