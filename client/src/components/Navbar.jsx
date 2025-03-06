@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom"; 
-import logo from '../../public/movie-roll.png'
+import logo from '../assets/movie-roll.png'
 
 function Navbar() { 
   let token = null;
