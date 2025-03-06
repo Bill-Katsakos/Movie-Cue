@@ -279,9 +279,9 @@ const loginUser = async (req, res) => {
       username: oldRegisteredUser.username,
     };
     let token = await jwt.sign(payload, process.env.SECRET_KEY
-        // ,{
-        //  expiresIn: "1h", // expiresIn: "1h" - means that the token is expiring in 1 hour
-        // }
+        ,{
+         expiresIn: "10h", // expiresIn: "1h" - means that the token is expiring in 1 hour
+        }
     );
 
     return res.send({ msg: "Login Successfully", token }); 
