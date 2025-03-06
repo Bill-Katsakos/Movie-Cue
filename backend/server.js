@@ -7,7 +7,7 @@ const axios = require("axios");
 
 const authMiddleware = require("./middleware/auth");
 
-const port = 4000;
+const port = process.env.PORT || 4000;
 const app = express();
 const URI = process.env.MONGODB_URI;
 const saltsRound = Number(process.env.SALT_ROUND);
@@ -257,39 +257,34 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res.send({ msg: "All fields are required" });
+      return res.status(400).json({ msg: "All fields are required" });
     }
     let oldRegisteredUser = await User.findOne({ email });
-
     if (!oldRegisteredUser) {
-      return res.send({ msg: "User not found, please register first." });
+      return res.status(404).json({ msg: "User not found, please register first." });
     }
     let isPasswordCorrect = await bcrypt.compare(
       password,
       oldRegisteredUser.password
     );
     if (!isPasswordCorrect) {
-      return res.send({ msg: "Wrong password." });
+      return res.status(401).json({ msg: "Wrong password." });
     }
-    // ___________token__________
-
     let payload = {
       userId: oldRegisteredUser._id,
       email: oldRegisteredUser.email,
       username: oldRegisteredUser.username,
     };
-    let token = await jwt.sign(payload, process.env.SECRET_KEY
-        ,{
-         expiresIn: "10h", // expiresIn: "1h" - means that the token is expiring in 1 hour
-        }
-    );
-
-    return res.send({ msg: "Login Successfully", token }); 
+    let token = await jwt.sign(payload, process.env.SECRET_KEY, {
+      expiresIn: "10h",
+    });
+    return res.status(200).json({ msg: "Login Successfully", token });
   } catch (error) {
     console.log(error);
-    res.status(500).send({ msg: "Internal server error" });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
+
 
 app.post("/user/login", loginUser);
 

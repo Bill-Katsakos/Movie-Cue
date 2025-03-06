@@ -11,18 +11,20 @@ function Login() {
   async function handleLogin(e) {
     e.preventDefault();
     try {
-      let userInfo = {
-        email,
-        password,
-      };
+      let userInfo = { email, password };
       let res = await axios.post("http://localhost:4000/user/login", userInfo);
-      // alert(res.data.msg);
-      localStorage.setItem("token", res.data.token); 
-      navigate("/find-movie");
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        navigate("/find-movie");
+      } else {
+        alert(res.data.msg);
+      }
     } catch (error) {
       console.log(error);
+      alert("Please enter a valid email or password.");
     }
   }
+  
   return (
     <div className="d-flex flex-column justify-content-center align-items-center text-center mt-5">
       <h1>Login</h1>
