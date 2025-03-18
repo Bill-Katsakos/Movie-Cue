@@ -52,6 +52,12 @@ To run the project locally, follow these steps:
    npm run dev
    ```
 
+## Deployment  
+You can test the live version of Movie-Cue here:  
+🔗 [Movie-Cue Live Demo](https://katsakos-movie-cue.netlify.app/)
+
+> **Note:** On Render.com’s free plan, backend servers go idle after 15 minutes of inactivity. If the app hasn’t been used recently, the first request may take up to one minute to respond.
+
 ## Usage
 
 ### Pages & Functionality
